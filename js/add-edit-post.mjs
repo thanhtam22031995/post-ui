@@ -1,3 +1,4 @@
+import axiosClient from './api/axiosClient.js';
 import postApi from './api/postApi.js';
 import AppConstants from './appConstants.js';
 
@@ -7,6 +8,10 @@ const setFormValues = (post) => {
     postImgElement.style.backgroundImage = `url(${post.imageUrl})`;
   }
 
+  const postTitleElement = document.querySelector('#postDetailTitle');
+  if (postTitleElement) {
+    postTitleElement.textContent = post.title;
+  }
   const formElement = document.querySelector('#postForm');
 
   const titleInpus = formElement.querySelector('#postTitle');
@@ -25,7 +30,30 @@ const setFormValues = (post) => {
   }
 };
 
-const handleChangeImageClick = () => {
+// const getRandomImage = async () => {
+//   const randomId = 1 + Math.trunc(Math.random() * 1000);
+
+//   const imageUrl = `https://picsum.photos/id/${randomId}/${AppConstants.DEFAULT_IMAGE_WIDTH}/${AppConstants.DEFAULT_IMAGE_HEIGHT}`;
+//   try {
+//     const res = await axiosClient.get(imageUrl);
+//     return imageUrl;
+//   } catch (error) {
+//     getRandomImage();
+//     console.log(error);
+//   }
+// };
+
+// const handleChangeImage = async () => {
+//   const imageUrl = await getRandomImage();
+
+//   const element = document.querySelector('#postHeroImage');
+//   if (element) {
+//     element.style.backgroundImage = `url(${imageUrl})`;
+//     element.addEventListener('error', handleChangeImage);
+//   }
+// };
+
+const handleChangeImage = () => {
   const randomId = 1 + Math.trunc(Math.random() * 1000);
 
   const imageUrl = `https://picsum.photos/id/${randomId}/${AppConstants.DEFAULT_IMAGE_WIDTH}/${AppConstants.DEFAULT_IMAGE_HEIGHT}`;
@@ -33,13 +61,13 @@ const handleChangeImageClick = () => {
   const element = document.querySelector('#postHeroImage');
   if (element) {
     element.style.backgroundImage = `url(${imageUrl})`;
-    element.addEventListener('error', handleChangeImageClick);
+    element.addEventListener('error', handleChangeImage);
   }
 };
 
 const changeBackgroundButton = document.querySelector('#postChangeImage');
 if (changeBackgroundButton) {
-  changeBackgroundButton.addEventListener('click', handleChangeImageClick);
+  changeBackgroundButton.addEventListener('click', handleChangeImage);
 }
 
 const getImageUrlFromString = (str) => {
@@ -107,7 +135,9 @@ const handleFormSubmit = async (postId) => {
       formValues.id = postId;
       await postApi.update(formValues);
     } else {
-      await postApi.add(formValues);
+      const newPost = await postApi.add(formValues);
+      window.location = `add-edit-post.html?id=${newPost.id}`;
+      alert('Add new post successfully');
     }
   } catch (error) {
     console.log("Can't update data", error);
@@ -118,16 +148,26 @@ const handleFormSubmit = async (postId) => {
   const params = new URLSearchParams(window.location.search);
   const postId = params.get('id');
   const isEditMode = !!postId;
-
+  const loading = document.querySelector('#loader-wrapper');
+  const goDetailElement = document.querySelector('#goToDetailPageLink');
   if (isEditMode) {
     try {
       const post = await postApi.get(postId);
       setFormValues(post);
+
+      if (loading) {
+        loading.setAttribute('hidden', '');
+      }
+      goDetailElement.href = `./post-detail.html?id=${postId}`;
+      goDetailElement.innerHTML = '<i class="far fa-eye"></i> View post detail';
     } catch (error) {
       console.log(error);
     }
   } else {
-    handleChangeImageClick();
+    handleChangeImage();
+    if (loading) {
+      loading.setAttribute('hidden', '');
+    }
   }
 
   const formElement = document.querySelector('#postForm');
@@ -138,8 +178,10 @@ const handleFormSubmit = async (postId) => {
     });
   }
 
-  const imageElement = document.querySelector('#postHeroImage > img');
+  const imageElement = document.querySelector('#fakeImg');
   if (imageElement) {
-    imageElement.addEventListener('error', handleChangeImageClick);
+    imageElement.onerror = function () {
+      handleChangeImage();
+    };
   }
 })();

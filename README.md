@@ -1,7 +1,8 @@
 # Post UI Project :heart_eyes:
 
-View live demo: [https://paulnguyen-mn.github.io/posts-ui/](https://paulnguyen-mn.github.io/posts-ui/)
+View live demo: [https://post-ui.vercel.app/](https://paulnguyen-mn.github.io/posts-ui/)
 This simple website has 3 pages:
+
 - Home page: `/`
 - Add/Edit a post page: `/add-edit-post.html`
 - Post detail page: `/post-detail.html`
@@ -42,7 +43,6 @@ URL: https://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1
 - [Axios](https://github.com/axios/axios): Used for working with API.
 - [Anime.js](https://animejs.com/) (optional): Animation ;)
 
-
 ## :tada: Post API Guide
 
 - API_URL: `https://js-post-api.herokuapp.com/api`
@@ -53,25 +53,24 @@ URL: https://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1
 GET /posts
 ```
 
-
 Supported query params:
+
 - `_limit`: Limit the number of items per page.
 - `_page`: Current page.
 - `_sort`: Indicate which field should be sorted on
 - `_order`: Indicate sort direction.
 
-*Eg: Get page 2 posts with 10 posts/page*
+_Eg: Get page 2 posts with 10 posts/page_
 
 ```sh
 GET /posts/:postId?_limit=10&_page=2
 ```
 
-*Eg: Sort post to get the latest posts first.*
+_Eg: Sort post to get the latest posts first._
 
 ```sh
 GET /posts/:postId?_sort=updatedAt&_order=desc
 ```
-
 
 ### To get a post detail
 
@@ -144,7 +143,6 @@ DELETE /posts/:postId
 - `Edit button click`: Go to edit page and populate detail of clicked post to form.
 - `Remove button click`: Show confirmation to remove? If yes, remove it. Otherwise, do nothing :P
 
-
 ## :heavy_plus_sign: Add/Edit post page
 
 - Add form validation
@@ -175,6 +173,6 @@ DELETE /posts/:postId
 - Update corresponding DOM: `title`, `description`, `author`, `createdAt` and `imageUrl`.
 - Integrate with `Lightbox` to view image when click on image.
 
-
 Good luck everyone! :heart_eyes:
+
 > Created by Po with :heart:

@@ -33,7 +33,14 @@ const renderPost = (post) => {
   try {
     const post = await postApi.get(postId);
     renderPost(post);
+    document.querySelector('#loader-wrapper').setAttribute('hidden', '');
   } catch (error) {
     console.log(error);
+  }
+
+  const editElement = document.querySelector('#goToEditPageLink');
+  if (editElement) {
+    editElement.href = `/add-edit-post.html?id=${postId}`;
+    editElement.innerHTML = '<i class="fas fa-edit"></i> Edit post';
   }
 })();

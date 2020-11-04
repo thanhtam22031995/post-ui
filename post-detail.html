@@ -30,6 +30,11 @@
 
 <body>
   <header>
+    <div id="loader-wrapper">
+      <span class="loader spinner-border text-primary" role="status"><span class="sr-only"></span></span>
+      <span class="loader spinner-border text-secondary" role="status"><span class="sr-only"></span></span>
+      <span class="loader spinner-border text-success" role="status"><span class="sr-only"></span></span>
+  </div>
     <!-- Navigation
       - Please note that we use an empty item to make sure that we always have 3 flex-items
         so logo is at centered, and the left and the right item can be optional by leaving it empty
@@ -82,7 +87,7 @@
               deserunt.
             </p>
 
-            <a href="https://picsum.photos/1368/800" data-lightbox="image-1" data-title="Picsum photos">
+            <a href="https://picsum.photos/1368/800" data-lightbox="round-trip" data-title="Picsum photos">
               <img class="post-image" src="https://picsum.photos/1368/800" alt="Picsum photos">
             </a>
             <p>
@@ -103,7 +108,7 @@
               deserunt.
             </p>
 
-            <a href="https://picsum.photos/1368/1000" data-lightbox="image-2" data-title="Picsum photos">
+            <a href="https://picsum.photos/1368/1000" data-lightbox="round-trip" data-title="Picsum photos">
               <img class="post-image" src="https://picsum.photos/1368/1000" alt="Picsum photos">
             </a>
 
@@ -134,7 +139,7 @@
     crossorigin="anonymous"></script>
 
   <!-- lightbox -->
-  <script src="dist/js/lightbox-plus-jquery.min.js"></script>
+  <script src="dist/js/lightbox-plus-jquery.js"></script>
 
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

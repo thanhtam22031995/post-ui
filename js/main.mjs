@@ -28,11 +28,17 @@ const renderPost = (postList) => {
     const ImgElement = newLiElement.querySelector('#postItemImage');
     if (ImgElement) {
       ImgElement.src = post.imageUrl;
+      ImgElement.addEventListener('click', (e) => {
+        window.location = `/post-detail.html?id=${post.id}`;
+      });
     }
 
     const titleElement = newLiElement.querySelector('#postItemTitle');
     if (titleElement) {
       titleElement.textContent = `${post.title}`;
+      titleElement.addEventListener('click', (e) => {
+        window.location = `/post-detail.html?id=${post.id}`;
+      });
     }
 
     const descriptionElement = newLiElement.querySelector('#postItemDescription');
@@ -47,14 +53,7 @@ const renderPost = (postList) => {
 
     const postItemTimeElement = newLiElement.querySelector('#postItemTimeSpan');
     if (postItemTimeElement) {
-      postItemTimeElement.textContent = `${formatDate(post.createdAt)}`;
-    }
-
-    const postItemElement = newLiElement.querySelector('.post-item');
-    if (postItemElement) {
-      postItemElement.addEventListener('click', (e) => {
-        window.location = `/post-detail.html?id=${post.id}`;
-      });
+      postItemTimeElement.textContent = `- ${formatDate(post.createdAt)}`;
     }
 
     const editElement = newLiElement.querySelector('#postItemEdit');
@@ -92,10 +91,8 @@ const getPageList = (pagination) => {
   const totalPages = Math.ceil(_totalRows / _limit);
   let prevPage = -1;
 
-  // Return -1 if invalid page detected
   if (_page < 1 || _page > totalPages) return [0, -1, -1, -1, 0];
 
-  // Calculate prev page
   if (_page === 1) prevPage = 1;
   else if (_page === totalPages) prevPage = _page - 2 > 0 ? _page - 2 : 1;
   else prevPage = _page - 1;
@@ -111,47 +108,38 @@ const getPageList = (pagination) => {
     _page === totalPages || totalPages === _page ? 0 : _page + 1,
   ];
 };
-
 const renderPostsPagination = (pagination) => {
   const postPagination = document.querySelector('#postsPagination');
   if (postPagination) {
     const pageList = getPageList(pagination);
-    console.log(pageList);
     const { _page, _limit } = pagination;
-    // Search list of 5 page items
     const pageItems = postPagination.querySelectorAll('.page-item');
-
-    // Just to make sure pageItems has exactly 5 items
     if (pageItems.length === 5) {
       pageItems.forEach((item, idx) => {
-        switch (pageList[idx]) {
-          case -1:
-            item.setAttribute('hidden', '');
-            break;
-          case 0:
-            item.classList.add('disabled');
-            break;
-          default: {
-            const pageLink = item.querySelector('.page-link');
-            if (pageLink) {
-              // Update href of page link
-              pageLink.href = `?_page=${pageList[idx]}&_limit=${_limit}`;
+        if (pageList[idx] === -1) {
+          item.setAttribute('hidden', '');
+          return;
+        }
 
-              // Update text content of page link for item: 1, 2, 3 (zero base)
-              if (idx > 0 && idx < 4) {
-                pageLink.textContent = pageList[idx];
-              }
-            }
+        if (pageList[idx] === 0) {
+          item.classList.add('disabled');
+          return;
+        }
 
-            // Set current active page item, only for 1, 2, 3 (zero base)
-            if (idx > 0 && idx < 4 && pageList[idx] === _page) {
-              item.classList.add('active');
-            }
+        const pageLink = item.querySelector('.page-link');
+        if (pageLink) {
+          pageLink.href = `?_page=${pageList[idx]}&_limit=${_limit}`;
+
+          if (idx > 0 && idx < 4) {
+            pageLink.textContent = pageList[idx];
           }
+        }
+
+        if (idx > 0 && idx < 4 && pageList[idx] === _page) {
+          item.classList.add('active');
         }
       });
 
-      // Show pagination
       postPagination.removeAttribute('hidden');
     }
   }
@@ -174,6 +162,7 @@ const renderPostsPagination = (pagination) => {
     const pagination = response.pagination;
     renderPostsPagination(pagination);
     renderPost(postList);
+    document.querySelector('#loader-wrapper').setAttribute('hidden', '');
   } catch (error) {
     console.log('Some error here', error);
   }
