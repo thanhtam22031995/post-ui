@@ -61,7 +61,14 @@ const handleChangeImage = () => {
   const element = document.querySelector('#postHeroImage');
   if (element) {
     element.style.backgroundImage = `url(${imageUrl})`;
-    element.addEventListener('error', handleChangeImage);
+
+    const imageElement = document.querySelector('#fakeImg');
+    if (imageElement) {
+      imageElement.src = imageUrl;
+      imageElement.onerror = function () {
+        handleChangeImage();
+      };
+    }
   }
 };
 
@@ -176,12 +183,5 @@ const handleFormSubmit = async (postId) => {
       handleFormSubmit(postId);
       e.preventDefault();
     });
-  }
-
-  const imageElement = document.querySelector('#fakeImg');
-  if (imageElement) {
-    imageElement.onerror = function () {
-      handleChangeImage();
-    };
   }
 })();

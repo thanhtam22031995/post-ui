@@ -1,6 +1,6 @@
 # Post UI Project :heart_eyes:
 
-View live demo: [https://post-ui.vercel.app/](https://paulnguyen-mn.github.io/posts-ui/)
+View live demo: [https://post-ui.vercel.app/](https://post-ui.vercel.app/)
 This simple website has 3 pages:
 
 - Home page: `/`
