@@ -1,57 +1,18 @@
-import axiosClient from './api/axiosClient.js';
 import postApi from './api/postApi.js';
 import AppConstants from './appConstants.js';
+import utils from './utils.js';
 
 const setFormValues = (post) => {
-  const postImgElement = document.querySelector('#postHeroImage');
-  if (postImgElement) {
-    postImgElement.style.backgroundImage = `url(${post.imageUrl})`;
-  }
+  utils.setTextByElementId('postDetailTitle', post.title);
 
-  const postTitleElement = document.querySelector('#postDetailTitle');
-  if (postTitleElement) {
-    postTitleElement.textContent = post.title;
-  }
-  const formElement = document.querySelector('#postForm');
+  utils.setValueByElementId('postTitle', post.title);
 
-  const titleInpus = formElement.querySelector('#postTitle');
-  if (titleInpus) {
-    titleInpus.value = post.title;
-  }
+  utils.setValueByElementId('postAuthor', post.author);
 
-  const authorInpus = formElement.querySelector('#postAuthor');
-  if (authorInpus) {
-    authorInpus.value = post.author;
-  }
+  utils.setValueByElementId('postDescription', post.description);
 
-  const descriptionInput = formElement.querySelector('#postDescription');
-  if (descriptionInput) {
-    descriptionInput.value = post.description;
-  }
+  utils.setBackgroundImageByElementId('postHeroImage', post.imageUrl);
 };
-
-// const getRandomImage = async () => {
-//   const randomId = 1 + Math.trunc(Math.random() * 1000);
-
-//   const imageUrl = `https://picsum.photos/id/${randomId}/${AppConstants.DEFAULT_IMAGE_WIDTH}/${AppConstants.DEFAULT_IMAGE_HEIGHT}`;
-//   try {
-//     const res = await axiosClient.get(imageUrl);
-//     return imageUrl;
-//   } catch (error) {
-//     getRandomImage();
-//     console.log(error);
-//   }
-// };
-
-// const handleChangeImage = async () => {
-//   const imageUrl = await getRandomImage();
-
-//   const element = document.querySelector('#postHeroImage');
-//   if (element) {
-//     element.style.backgroundImage = `url(${imageUrl})`;
-//     element.addEventListener('error', handleChangeImage);
-//   }
-// };
 
 const handleChangeImage = () => {
   const randomId = 1 + Math.trunc(Math.random() * 1000);
@@ -64,6 +25,7 @@ const handleChangeImage = () => {
 
     const imageElement = document.querySelector('#fakeImg');
     if (imageElement) {
+      imageElement.setAttribute('hidden', '');
       imageElement.src = imageUrl;
       imageElement.onerror = function () {
         handleChangeImage();
@@ -72,46 +34,19 @@ const handleChangeImage = () => {
   }
 };
 
-const changeBackgroundButton = document.querySelector('#postChangeImage');
-if (changeBackgroundButton) {
-  changeBackgroundButton.addEventListener('click', handleChangeImage);
-}
-
-const getImageUrlFromString = (str) => {
-  const firstDoubleQuotePosition = str.indexOf('"');
-  const lastDoubleQuotePosition = str.lastIndexOf('"');
-  return str.slice(firstDoubleQuotePosition + 1, lastDoubleQuotePosition);
-};
-
 const getFormValues = () => {
-  // if (!form) return;
-  const formvalues = {};
+  const formvalues = {
+    title: utils.getValueByElementId('postTitle'),
+    author: utils.getValueByElementId('postAuthor'),
+    description: utils.getValueByElementId('postDescription'),
+    imageUrl: utils.getBackgroundImageByElementId('postHeroImage'),
+  };
 
-  const titleElement = document.querySelector('#postTitle');
-  if (titleElement) {
-    formvalues.title = titleElement.value;
-  }
-
-  const authorElement = document.querySelector('#postAuthor');
-  if (titleElement) {
-    formvalues.author = authorElement.value;
-  }
-
-  const discriptionElement = document.querySelector('#postDescription');
-  if (titleElement) {
-    formvalues.description = discriptionElement.value;
-  }
-
-  const postImageElement = document.querySelector('#postHeroImage');
-  if (postImageElement) {
-    formvalues.imageUrl = getImageUrlFromString(postImageElement.style.backgroundImage);
-  }
   return formvalues;
 };
 const validateForm = () => {
   let isValid = true;
 
-  // title is required
   const titleElement = document.querySelector('#postTitle');
   const title = titleElement.value;
   if (!title) {
@@ -119,7 +54,6 @@ const validateForm = () => {
     isValid = false;
   }
 
-  // author is required
   const authorElement = document.querySelector('#postAuthor');
   const author = authorElement.value;
   if (!author) {
@@ -141,9 +75,12 @@ const handleFormSubmit = async (postId) => {
     if (postId) {
       formValues.id = postId;
       await postApi.update(formValues);
+
+      alert('Update post successfully');
     } else {
       const newPost = await postApi.add(formValues);
       window.location = `add-edit-post.html?id=${newPost.id}`;
+
       alert('Add new post successfully');
     }
   } catch (error) {
@@ -156,25 +93,31 @@ const handleFormSubmit = async (postId) => {
   const postId = params.get('id');
   const isEditMode = !!postId;
   const loading = document.querySelector('#loader-wrapper');
-  const goDetailElement = document.querySelector('#goToDetailPageLink');
+
   if (isEditMode) {
     try {
       const post = await postApi.get(postId);
       setFormValues(post);
 
-      if (loading) {
-        loading.setAttribute('hidden', '');
+      loading.setAttribute('hidden', '');
+
+      const goDetailElement = document.querySelector('#goToDetailPageLink');
+      if (goDetailElement) {
+        goDetailElement.href = `./post-detail.html?id=${postId}`;
+        goDetailElement.innerHTML = '<i class="far fa-eye"></i> View post detail';
       }
-      goDetailElement.href = `./post-detail.html?id=${postId}`;
-      goDetailElement.innerHTML = '<i class="far fa-eye"></i> View post detail';
     } catch (error) {
       console.log(error);
     }
   } else {
     handleChangeImage();
-    if (loading) {
-      loading.setAttribute('hidden', '');
-    }
+
+    loading.setAttribute('hidden', '');
+  }
+
+  const changeBackgroundButton = document.querySelector('#postChangeImage');
+  if (changeBackgroundButton) {
+    changeBackgroundButton.addEventListener('click', handleChangeImage);
   }
 
   const formElement = document.querySelector('#postForm');

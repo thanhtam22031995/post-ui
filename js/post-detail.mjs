@@ -1,30 +1,16 @@
 import postApi from './api/postApi.js';
 import utils from './utils.js';
+
 const renderPost = (post) => {
-  const heroElement = document.querySelector('#postHeroImage');
-  if (heroElement) {
-    heroElement.style.backgroundImage = `url(${post.imageUrl})`;
-  }
+  utils.setBackgroundImageByElementId('postHeroImage', post.imageUrl);
 
-  const postTitleElement = document.querySelector('#postDetailTitle');
-  if (postTitleElement) {
-    postTitleElement.textContent = post.title;
-  }
+  utils.setTextByElementId('postDetailTitle', post.title);
 
-  const postAuthorElement = document.querySelector('#postDetailAuthor');
-  if (postAuthorElement) {
-    postAuthorElement.textContent = post.author;
-  }
+  utils.setTextByElementId('postDetailAuthor', post.author);
 
-  const postTimeElement = document.querySelector('#postDetailTimeSpan');
-  if (postTimeElement) {
-    postTimeElement.textContent = `- ${utils.formatDate(post.updatedAt)}`;
-  }
+  utils.setTextByElementId('postDetailTimeSpan', `- ${utils.formatDate(post.updatedAt)}`);
 
-  const descriptionElement = document.querySelector('#postDetailDescription');
-  if (descriptionElement) {
-    descriptionElement.textContent = post.description;
-  }
+  utils.setTextByElementId('postDetailDescription', post.description);
 };
 
 (async () => {
@@ -33,7 +19,11 @@ const renderPost = (post) => {
   try {
     const post = await postApi.get(postId);
     renderPost(post);
-    document.querySelector('#loader-wrapper').setAttribute('hidden', '');
+
+    const loading = document.querySelector('#loader-wrapper');
+    if (loading) {
+      loading.setAttribute('hidden', '');
+    }
   } catch (error) {
     console.log(error);
   }

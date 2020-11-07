@@ -3,9 +3,7 @@ import AppConstants from './appConstants.js';
 const truncateTextlength = (text, length) => {
   if (length < 0 || !text) return '';
 
-  const truncatedText = text.length > length
-    ? `${text.substring(0, length - 3)}...`
-    : text;
+  const truncatedText = text.length > length ? `${text.substring(0, length - 3)}...` : text;
 
   return truncatedText;
 };
@@ -15,8 +13,8 @@ const formatDate = (dateString) => {
 
   // Format: HH:mm dd/MM/yyyy
   const date = new Date(dateString);
-  const hour = date.getHours();
-  const minute = date.getMinutes();
+  const hour = `0${date.getHours()}`.slice(-2);
+  const minute = `0${date.getMinutes()}`.slice(-2);
   const day = `0${date.getDate()}`.slice(-2);
   const month = `0${date.getMonth() + 1}`.slice(-2);
   const year = date.getFullYear();
@@ -50,17 +48,17 @@ const setBackgroundImageByElementId = (elementId, imageUrl) => {
   if (element) {
     element.style.backgroundImage = `url(${imageUrl || AppConstants.DEFAULT_IMAGE_URL})`;
   }
-}
+};
 
 const getBackgroundImageByElementId = (elementId) => {
   const element = document.getElementById(elementId);
   if (element) {
     const url = element.style.backgroundImage;
-    const firstDoubleQuotePosition = url.indexOf("\"");
-    const lastDoubleQuotePosition = url.lastIndexOf("\"");
+    const firstDoubleQuotePosition = url.indexOf('"');
+    const lastDoubleQuotePosition = url.lastIndexOf('"');
     return url.substring(firstDoubleQuotePosition + 1, lastDoubleQuotePosition);
   }
-}
+};
 
 const addClassByElementId = (elementId, classList) => {
   const element = document.getElementById(elementId);

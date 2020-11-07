@@ -1,19 +1,6 @@
 import postApi from './api/postApi.js';
 import AppConstants from './appConstants.js';
-
-const formatDate = (dateString) => {
-  if (!dateString) return null;
-
-  // Format: HH:mm dd/MM/yyyy
-  const date = new Date(dateString);
-  const hour = `0${date.getHours()}`.slice(-2);
-  const minute = `0${date.getMinutes()}`.slice(-2);
-  const day = `0${date.getDate()}`.slice(-2);
-  const month = `0${date.getMonth() + 1}`.slice(-2);
-  const year = date.getFullYear();
-
-  return `${hour}:${minute} ${day}/${month}/${year}`;
-};
+import utils from './utils.js';
 
 const renderPost = (postList) => {
   const postElement = document.querySelector('#postsList');
@@ -31,6 +18,9 @@ const renderPost = (postList) => {
       ImgElement.addEventListener('click', (e) => {
         window.location = `/post-detail.html?id=${post.id}`;
       });
+      ImgElement.onerror = function () {
+        ImgElement.src = AppConstants.DEFAULT_HERO_IMAGE_URL;
+      };
     }
 
     const titleElement = newLiElement.querySelector('#postItemTitle');
@@ -43,7 +33,7 @@ const renderPost = (postList) => {
 
     const descriptionElement = newLiElement.querySelector('#postItemDescription');
     if (descriptionElement) {
-      descriptionElement.textContent = `${post.description.slice(0, 100)}...`;
+      descriptionElement.textContent = utils.truncateTextlength(post.description, 100);
     }
 
     const authorElement = newLiElement.querySelector('#postItemAuthor');
@@ -53,7 +43,7 @@ const renderPost = (postList) => {
 
     const postItemTimeElement = newLiElement.querySelector('#postItemTimeSpan');
     if (postItemTimeElement) {
-      postItemTimeElement.textContent = `- ${formatDate(post.createdAt)}`;
+      postItemTimeElement.textContent = `- ${utils.formatDate(post.updatedAt)}`;
     }
 
     const editElement = newLiElement.querySelector('#postItemEdit');
@@ -108,11 +98,13 @@ const getPageList = (pagination) => {
     _page === totalPages || totalPages === _page ? 0 : _page + 1,
   ];
 };
+
 const renderPostsPagination = (pagination) => {
   const postPagination = document.querySelector('#postsPagination');
   if (postPagination) {
     const pageList = getPageList(pagination);
     const { _page, _limit } = pagination;
+
     const pageItems = postPagination.querySelectorAll('.page-item');
     if (pageItems.length === 5) {
       pageItems.forEach((item, idx) => {
@@ -149,6 +141,7 @@ const renderPostsPagination = (pagination) => {
   const urlParam = new URLSearchParams(window.location.search);
   const page = urlParam.get('_page');
   const limit = urlParam.get('_limit');
+
   const params = {
     _page: page || AppConstants.DEFAULT_PAGE,
     _limit: limit || AppConstants.DEFAULT_LIMIT,
@@ -160,9 +153,14 @@ const renderPostsPagination = (pagination) => {
     const response = await postApi.getAll(params);
     const postList = response.data;
     const pagination = response.pagination;
+
     renderPostsPagination(pagination);
     renderPost(postList);
-    document.querySelector('#loader-wrapper').setAttribute('hidden', '');
+
+    const loading = document.querySelector('#loader-wrapper');
+    if (loading) {
+      loading.setAttribute('hidden', '');
+    }
   } catch (error) {
     console.log('Some error here', error);
   }
