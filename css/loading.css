@@ -1,8 +1,20 @@
+@-webkit-keyframes sky {
+  from {left: 50%}
+  to {left: -30%;}
+}
 
 @keyframes sky {
   from {left: 50%}
   to {left: -30%;}
 }
+
+@-webkit-keyframes airplane {
+  0% {top: 40%; left:20%;}
+  25% {top: 55%; left:40%;}
+  75% {top:30%; left:10%;}
+  100% {top:40%; left:20%;}	
+}
+
 
 @keyframes airplane {
   0% {top: 40%; left:20%;}
@@ -10,6 +22,8 @@
   75% {top:30%; left:10%;}
   100% {top:40%; left:20%;}	
 }
+
+
 
 /* Loader */
 
@@ -35,8 +49,10 @@ height:7em;
 border-radius: 7em;
 left: 80%;
 top:5%;
-animation: sky 5s infinite;
+animation: sky 2s infinite;
+-webkit-animation: sky 5s infinite;
 }
+
 
 .cloud::before {
 content:"";

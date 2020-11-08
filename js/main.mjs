@@ -12,6 +12,10 @@ const renderPost = (postList) => {
     const liElementFromTemplate = templateElement.content.querySelector('li');
     const newLiElement = liElementFromTemplate.cloneNode(true);
 
+    if (newLiElement) {
+      newLiElement.classList.add('trans-animation');
+    }
+
     const ImgElement = newLiElement.querySelector('#postItemImage');
     if (ImgElement) {
       ImgElement.src = post.imageUrl;
