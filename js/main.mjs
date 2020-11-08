@@ -145,7 +145,7 @@ const renderPostsPagination = (pagination) => {
   const params = {
     _page: page || AppConstants.DEFAULT_PAGE,
     _limit: limit || AppConstants.DEFAULT_LIMIT,
-    _sort: 'updatedAt',
+    _sort: 'createdAt',
     _order: 'desc',
   };
 

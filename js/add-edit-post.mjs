@@ -92,14 +92,11 @@ const handleFormSubmit = async (postId) => {
   const params = new URLSearchParams(window.location.search);
   const postId = params.get('id');
   const isEditMode = !!postId;
-  const loading = document.querySelector('#loader-wrapper');
 
   if (isEditMode) {
     try {
       const post = await postApi.get(postId);
       setFormValues(post);
-
-      loading.setAttribute('hidden', '');
 
       const goDetailElement = document.querySelector('#goToDetailPageLink');
       if (goDetailElement) {
@@ -111,8 +108,6 @@ const handleFormSubmit = async (postId) => {
     }
   } else {
     handleChangeImage();
-
-    loading.setAttribute('hidden', '');
   }
 
   const changeBackgroundButton = document.querySelector('#postChangeImage');
